@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from '@/hooks/use-toast';
 
 const AdminLogin = () => {
   const [adminId, setAdminId] = useState('');
@@ -15,17 +17,38 @@ const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+  const { signIn, getUserRole } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // TODO: Implement Supabase authentication once connected
-    // For now, simulate loading
-    setTimeout(() => {
+
+    const { error } = await signIn(email, password);
+
+    if (error) {
+      toast({
+        title: "Login Failed",
+        description: error,
+        variant: "destructive",
+      });
       setIsLoading(false);
-      // Will redirect to admin dashboard after Supabase integration
-    }, 2000);
+      return;
+    }
+
+    // Check if user has admin role
+    const role = getUserRole();
+    console.log('User role after admin login:', role);
+
+    if (role === 'admin') {
+      navigate('/admin/dashboard');
+    } else {
+      toast({
+        title: "Access Denied",
+        description: "Admin credentials required.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
   };
 
   const handleClientLogin = () => {
@@ -79,7 +102,6 @@ const AdminLogin = () => {
                   value={adminId}
                   onChange={(e) => setAdminId(e.target.value)}
                   className="h-12 bg-gray-50 border-gray-200 focus:border-[#5A1AFF] focus:ring-[#5A1AFF]"
-                  required
                 />
               </div>
 
