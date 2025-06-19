@@ -8,7 +8,8 @@ import { Separator } from '@/components/ui/separator';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const Index = () => {
+const AdminLogin = () => {
+  const [adminId, setAdminId] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -23,24 +24,24 @@ const Index = () => {
     // For now, simulate loading
     setTimeout(() => {
       setIsLoading(false);
-      // Will redirect based on user role after Supabase integration
+      // Will redirect to admin dashboard after Supabase integration
     }, 2000);
   };
 
-  const handleAdminLogin = () => {
-    navigate('/admin-login');
+  const handleClientLogin = () => {
+    navigate('/');
   };
 
   return (
     <div className="min-h-screen bg-[#250645] flex items-center justify-center p-4 relative">
-      {/* Admin Login Button - Top Right */}
-      <div className="absolute top-6 right-6">
+      {/* Client Login Button - Top Left */}
+      <div className="absolute top-6 left-6">
         <Button
-          onClick={handleAdminLogin}
+          onClick={handleClientLogin}
           variant="outline"
           className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
         >
-          ADMIN LOGIN
+          CLIENT LOGIN
         </Button>
       </div>
 
@@ -48,25 +49,40 @@ const Index = () => {
         {/* Title and Subtitle */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-white tracking-tight">
-            Welcome to FizzPanel
+            FizzPanel Admin
           </h1>
           <h3 className="text-lg text-white/80 leading-relaxed">
-            Your personalized automation control center. Access your smart systems, monitor workflow and manage integrations — all in one place.
+            Administrative access to the FizzPanel control center. Monitor all systems and manage user access.
           </h3>
         </div>
 
-        {/* Login Card */}
+        {/* Admin Login Card */}
         <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-0">
           <CardHeader className="space-y-2">
             <CardTitle className="text-2xl text-center text-gray-900">
-              Access FizzPanel
+              Admin Access to FizzPanel
             </CardTitle>
             <CardDescription className="text-center text-gray-600">
-              Enter your credentials to continue
+              Enter admin credentials to continue
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="adminId" className="text-gray-700">
+                  Admin ID Number
+                </Label>
+                <Input
+                  id="adminId"
+                  type="text"
+                  placeholder="Enter your admin ID"
+                  value={adminId}
+                  onChange={(e) => setAdminId(e.target.value)}
+                  className="h-12 bg-gray-50 border-gray-200 focus:border-[#5A1AFF] focus:ring-[#5A1AFF]"
+                  required
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-gray-700">
                   Email Address
@@ -129,9 +145,9 @@ const Index = () => {
             <Separator className="my-4" />
             
             <p className="text-sm text-gray-600 text-center">
-              Only accessible to FizzSync clients.
+              Only accessible to authorized admins.
               <br />
-              Can't login to FizzPanel?{' '}
+              Trouble logging in?{' '}
               <a href="mailto:support@fizzpanel.com" className="text-[#5A1AFF] hover:underline">
                 Contact support@fizzpanel.com
               </a>
@@ -158,4 +174,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default AdminLogin;
